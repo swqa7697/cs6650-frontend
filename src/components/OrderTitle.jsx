@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { PayPalButton } from './PayPalButton';
 import { statusColor } from '../util/constants';
 
 export const OrderTitle = ({ group, groupLabel }) => {
@@ -11,6 +12,11 @@ export const OrderTitle = ({ group, groupLabel }) => {
     .toLocaleString('en-US')
     .split(' ')[0]
     .replace(/,/g, '');
+  const price =
+    group.reduce((total, order) => total + order.reservation.flight.price, 0) *
+    numPassengers;
+  const currency = group[0].reservation.flight.currency;
+  const reservationIds = group.map((order) => order.reservation._id);
 
   return (
     <>
@@ -39,7 +45,7 @@ export const OrderTitle = ({ group, groupLabel }) => {
           }}
         >
           <div>Booked On: {orderDate}</div>
-          {showPassenger ? (
+          {!showPassenger ? (
             numPassengers > 1 ? (
               <u>{numPassengers} Passengers Included</u>
             ) : (
@@ -64,18 +70,12 @@ export const OrderTitle = ({ group, groupLabel }) => {
             fontSize: 18,
           }}
         >
-          {status === 'canceled' ? (
-            <button
-              onClick={() => {}}
-              style={{
-                backgroundColor: 'lightskyblue',
-                padding: 6,
-                paddingLeft: 12,
-                paddingRight: 12,
-              }}
-            >
-              Pay
-            </button>
+          {status === 'pending' ? (
+            <PayPalButton
+              price={price}
+              currency={currency}
+              reservationIds={reservationIds}
+            />
           ) : null}
           <div style={{ color: statusColor[status] }}>
             {status.charAt(0).toUpperCase() + status.slice(1)}

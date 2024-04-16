@@ -9,10 +9,10 @@ import FlatList from 'flatlist-react';
 import { FaHome, FaSignOutAlt } from 'react-icons/fa';
 import { FaArrowRotateRight } from 'react-icons/fa6';
 import { FlightCard } from '../components/FlightCard';
+import { OrderTitle } from '../components/OrderTitle';
 
 import '@aws-amplify/ui-react/styles.css';
 import '../styles/loading.css';
-import { OrderTitle } from '../components/OrderTitle';
 
 const User = ({ signOut, user }) => {
   const [orderHistory, setOrderHistory] = useState([]);
@@ -40,6 +40,7 @@ const User = ({ signOut, user }) => {
       return;
     }
 
+    // For dev
     console.log(token);
 
     try {
@@ -72,6 +73,7 @@ const User = ({ signOut, user }) => {
           justifyContent: 'flex-end',
           alignItems: 'center',
           gap: 15,
+          zIndex: 100,
         }}
       >
         <div style={{ fontSize: 18, fontWeight: 'bold' }}>{user.username}</div>
