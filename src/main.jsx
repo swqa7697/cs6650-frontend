@@ -1,13 +1,36 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import { RouterProvider, createBrowserRouter } from 'react-router-dom';
-import Root from './routes/Root.jsx';
-import './index.css';
+import {
+  Navigate,
+  RouterProvider,
+  createBrowserRouter,
+} from 'react-router-dom';
+import { Amplify } from 'aws-amplify';
+import Search from './routes/Search.jsx';
+import User from './routes/User.jsx';
+import BookFlight from './routes/BookFlight.jsx';
+import awsConfig from './util/aws-config.js';
+
+import './styles/index.css';
+
+Amplify.configure(awsConfig);
 
 const router = createBrowserRouter([
   {
     path: '/',
-    element: <Root />,
+    element: <Navigate replace to="/search" />,
+  },
+  {
+    path: '/search',
+    element: <Search />,
+  },
+  {
+    path: '/user',
+    element: <User />,
+  },
+  {
+    path: '/bookflight',
+    element: <BookFlight />,
   },
 ]);
 

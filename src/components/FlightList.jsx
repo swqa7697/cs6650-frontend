@@ -1,35 +1,20 @@
 import FlatList from 'flatlist-react';
 import { FlightCard } from './FlightCard';
 
-export const FlightList = () => {
-  const data = [
-    {
-      flightNumber: 'AB 1234',
-      departure: 'LAX',
-      destination: 'SFO',
-      departureTime: '2024-04-12T12:15:00.000Z',
-      travelTime: 100,
-      price: 200,
-    },
-    {
-      flightNumber: 'AB 3221',
-      departure: 'LAX',
-      destination: 'SFO',
-      departureTime: '2024-04-12T15:00:00.000Z',
-      travelTime: 100,
-      price: 185,
-    },
-  ];
-
-  const timezone = 'America/Los_Angeles';
-
+export const FlightList = ({
+  flightsData,
+  timezone,
+  flightSelected,
+  setFlight,
+}) => {
   return (
     <FlatList
-      list={data}
+      list={flightsData}
       renderItem={(flight, idx) => {
         return (
           <FlightCard
             key={idx}
+            flightId={flight._id}
             flightNumber={flight.flightNumber}
             departure={flight.departure}
             destination={flight.destination}
@@ -37,10 +22,12 @@ export const FlightList = () => {
             travelTime={flight.travelTime}
             price={flight.price}
             timezone={timezone}
+            flightSelected={flightSelected}
+            setFlight={setFlight}
           />
         );
       }}
-      renderWhenEmpty={() => <div>List is empty!</div>}
+      renderWhenEmpty={() => null}
       sortBy="price"
     />
   );

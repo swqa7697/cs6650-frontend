@@ -1,6 +1,7 @@
-import { FaArrowRight } from 'react-icons/fa6';
+import { FaArrowRight, FaPlane } from 'react-icons/fa6';
 
 export const FlightCard = ({
+  flightId,
   flightNumber,
   departure,
   destination,
@@ -8,6 +9,8 @@ export const FlightCard = ({
   travelTime,
   price,
   timezone,
+  flightSelected,
+  setFlight,
 }) => {
   const depTime = new Date(departureTime);
   const arrTime = new Date(depTime.getTime() + travelTime * 60 * 1000);
@@ -28,16 +31,35 @@ export const FlightCard = ({
     .format(arrTime)
     .replace(/,/g, '');
 
+  const selectFlight = () => {
+    if (flightSelected) {
+      setFlight(null);
+    } else {
+      setFlight({
+        flightId,
+        flightNumber,
+        departure,
+        destination,
+        departureTime,
+        travelTime,
+        price,
+      });
+    }
+  };
+
   return (
-    <div style={{ height: 100, width: 450, marginBottom: 10 }}>
-      <button style={{ height: '100%', width: '100%' }}>
+    <div style={{ height: 105, width: '100%', marginBottom: 10 }}>
+      <button onClick={selectFlight} style={{ height: '100%', width: '100%' }}>
         <div
           style={{
             display: 'flex',
             justifyContent: 'space-between',
           }}
         >
-          <div>{flightNumber}</div>
+          <div>
+            <FaPlane style={{ marginRight: 6 }} />
+            {flightNumber}
+          </div>
           <div>${price}</div>
         </div>
         <div
@@ -47,16 +69,16 @@ export const FlightCard = ({
           }}
         >
           <div>
-            <div style={{ fontSize: 24, fontWeight: 'bold', margin: '3%' }}>
+            <div style={{ fontSize: 24, fontWeight: 'bold', margin: '2%' }}>
               {departure}
             </div>
             <div>{depTimeString}</div>
           </div>
           <div>
-            <FaArrowRight size={24} style={{ marginTop: '25%' }} />
+            <FaArrowRight size={24} style={{ marginTop: '34%' }} />
           </div>
           <div>
-            <div style={{ fontSize: 24, fontWeight: 'bold', margin: '3%' }}>
+            <div style={{ fontSize: 24, fontWeight: 'bold', margin: '2%' }}>
               {destination}
             </div>
             <div>{arrTimeString}</div>
