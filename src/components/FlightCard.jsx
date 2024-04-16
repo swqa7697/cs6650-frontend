@@ -7,10 +7,11 @@ export const FlightCard = ({
   destination,
   departureTime,
   travelTime,
-  price,
   timezone,
+  price,
   flightSelected,
   setFlight,
+  isSearch,
 }) => {
   const depTime = new Date(departureTime);
   const arrTime = new Date(depTime.getTime() + travelTime * 60 * 1000);
@@ -32,6 +33,10 @@ export const FlightCard = ({
     .replace(/,/g, '');
 
   const selectFlight = () => {
+    if (!isSearch) {
+      return;
+    }
+
     if (flightSelected) {
       setFlight(null);
     } else {
@@ -42,6 +47,7 @@ export const FlightCard = ({
         destination,
         departureTime,
         travelTime,
+        timezone,
         price,
       });
     }

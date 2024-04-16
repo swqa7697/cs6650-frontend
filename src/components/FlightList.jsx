@@ -1,12 +1,7 @@
 import FlatList from 'flatlist-react';
 import { FlightCard } from './FlightCard';
 
-export const FlightList = ({
-  flightsData,
-  timezone,
-  flightSelected,
-  setFlight,
-}) => {
+export const FlightList = ({ flightsData, flightSelected, setFlight }) => {
   return (
     <FlatList
       list={flightsData}
@@ -21,9 +16,10 @@ export const FlightList = ({
             departureTime={flight.departureTime}
             travelTime={flight.travelTime}
             price={flight.price}
-            timezone={timezone}
+            timezone={flight.timezone}
             flightSelected={flightSelected}
             setFlight={setFlight}
+            isSearch={true}
           />
         );
       }}

@@ -97,8 +97,7 @@ export default function Search() {
       <div style={{ width: '55%', maxWidth: 600, margin: 'auto' }}>
         {!depSelected ? (
           <FlightList
-            flightsData={depFlights.flights}
-            timezone={depFlights.timezone}
+            flightsData={depFlights}
             flightSelected={depSelected}
             setFlight={setDepSelected}
           />
@@ -110,10 +109,11 @@ export default function Search() {
             destination={depSelected.destination}
             departureTime={depSelected.departureTime}
             travelTime={depSelected.travelTime}
+            timezone={depSelected.timezone}
             price={depSelected.price}
-            timezone={depFlights.timezone}
             flightSelected={depSelected}
             setFlight={setDepSelected}
+            isSearch={true}
           />
         )}
       </div>
@@ -122,8 +122,7 @@ export default function Search() {
           <div style={{ width: '55%', maxWidth: 600, margin: 'auto' }}>
             <p>Choose Returning Flight:</p>
             <FlightList
-              flightsData={retFlights.flights}
-              timezone={retFlights.timezone}
+              flightsData={retFlights}
               flightSelected={retSelected}
               setFlight={setRetSelected}
             />
@@ -137,10 +136,11 @@ export default function Search() {
               destination={retSelected.destination}
               departureTime={retSelected.departureTime}
               travelTime={retSelected.travelTime}
+              timezone={retSelected.timezone}
               price={retSelected.price}
-              timezone={retFlights.timezone}
               flightSelected={retSelected}
               setFlight={setRetSelected}
+              isSearch={true}
             />
           </div>
         )

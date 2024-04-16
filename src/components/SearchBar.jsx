@@ -31,14 +31,14 @@ export const SearchBar = ({
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    setDepartureFlights({});
-    setReturnFlights({});
+    setDepartureFlights([]);
+    setReturnFlights([]);
   }, [isRoundTrip]);
 
   const searchFlights = async () => {
     setErrMsg('');
-    setDepartureFlights({});
-    setReturnFlights({});
+    setDepartureFlights([]);
+    setReturnFlights([]);
 
     if (
       !departure ||
@@ -100,8 +100,8 @@ export const SearchBar = ({
       setDepartureFlights(depFlightsRes.data);
     } catch (err) {
       setErrMsg(err.message);
-      setDepartureFlights({});
-      setReturnFlights({});
+      setDepartureFlights([]);
+      setReturnFlights([]);
       setIsLoading(false);
       return;
     }
@@ -127,11 +127,11 @@ export const SearchBar = ({
         setReturnFlights(retFlightsRes.data);
       } catch (err) {
         setErrMsg(err.message);
-        setReturnFlights({});
+        setReturnFlights([]);
         setIsLoading(false);
       }
     } else {
-      setReturnFlights({});
+      setReturnFlights([]);
     }
 
     setIsLoading(false);

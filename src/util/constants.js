@@ -14,3 +14,9 @@ export const passengerOptions = [
   { value: 8, label: '8' },
   { value: 9, label: '9' },
 ];
+
+export const statusColor = {
+  pending: 'orange',
+  confirmed: 'green',
+  canceled: 'grey',
+};
