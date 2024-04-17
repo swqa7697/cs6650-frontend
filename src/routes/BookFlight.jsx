@@ -4,6 +4,7 @@ import { fetchAuthSession } from 'aws-amplify/auth';
 import { FaArrowRotateRight } from 'react-icons/fa6';
 import { FaHome } from 'react-icons/fa';
 import axios from 'axios';
+import { BASE_URL } from '../config/config.json';
 
 import '../styles/loading.css';
 
@@ -86,7 +87,7 @@ export default function BookFlight() {
   const bookDeparture = async (accessToken) => {
     try {
       const res = await axios.post(
-        'http://localhost:3000/user/book',
+        `${BASE_URL}/user/book`,
         {
           flightId: depFlight.flightId,
           numPassengers,
@@ -95,6 +96,7 @@ export default function BookFlight() {
         {
           headers: {
             'cognito-token': accessToken.toString(),
+            'Content-Type': 'application/json',
           },
         },
       );
@@ -111,7 +113,7 @@ export default function BookFlight() {
   const bookReturn = async (accessToken, orderId) => {
     try {
       await axios.post(
-        'http://localhost:3000/user/book',
+        `${BASE_URL}/user/book`,
         {
           flightId: retFlight.flightId,
           numPassengers,
@@ -121,6 +123,7 @@ export default function BookFlight() {
         {
           headers: {
             'cognito-token': accessToken.toString(),
+            'Content-Type': 'application/json',
           },
         },
       );
@@ -134,14 +137,15 @@ export default function BookFlight() {
   const autoCancel = async (accessToken, reservationId) => {
     // Cancel the departure flight if failed to book return flight
     try {
-      await axios.post(
-        'http://localhost:3000/reservation/autoCancel',
+      await axios.put(
+        `${BASE_URL}/reservation/autoCancel`,
         {
           reservationId,
         },
         {
           headers: {
             'cognito-token': accessToken.toString(),
+            'Content-Type': 'application/json',
           },
         },
       );

@@ -10,6 +10,7 @@ import { FaHome, FaSignOutAlt } from 'react-icons/fa';
 import { FaArrowRotateRight } from 'react-icons/fa6';
 import { FlightCard } from '../components/FlightCard';
 import { OrderTitle } from '../components/OrderTitle';
+import { BASE_URL } from '../config/config.json';
 
 import '@aws-amplify/ui-react/styles.css';
 import '../styles/loading.css';
@@ -44,9 +45,10 @@ const User = ({ signOut, user }) => {
     console.log(token);
 
     try {
-      const res = await axios.get('http://localhost:3000/user/reservations', {
+      const res = await axios.get(`${BASE_URL}/user/reservations`, {
         headers: {
           'cognito-token': token,
+          'Content-Type': 'application/json',
         },
       });
       setOrderHistory(res.data);

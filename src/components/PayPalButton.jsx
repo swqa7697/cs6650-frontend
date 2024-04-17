@@ -1,6 +1,7 @@
 import { PayPalScriptProvider, PayPalButtons } from '@paypal/react-paypal-js';
 import { fetchAuthSession } from 'aws-amplify/auth';
 import axios from 'axios';
+import { BASE_URL } from '../config/config.json';
 
 export const PayPalButton = ({ price, currency, reservationIds }) => {
   const getAccessToken = async () => {
@@ -20,7 +21,7 @@ export const PayPalButton = ({ price, currency, reservationIds }) => {
   const confirmOrder = async (token, reservationId, purchaseId) => {
     try {
       await axios.put(
-        'http://localhost:3000/reservation/confirm',
+        `${BASE_URL}/reservation/confirm`,
         {
           reservationId,
           purchaseId,
@@ -28,6 +29,7 @@ export const PayPalButton = ({ price, currency, reservationIds }) => {
         {
           headers: {
             'cognito-token': token,
+            'Content-Type': 'application/json',
           },
         },
       );

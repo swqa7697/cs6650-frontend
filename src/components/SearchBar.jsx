@@ -7,6 +7,7 @@ import { useSetAtom } from 'jotai';
 import { FaArrowRotateRight } from 'react-icons/fa6';
 import { tripOptions, passengerOptions } from '../util/constants';
 import { departureFlightsAtom, returnFlightsAtom } from '../util/atoms';
+import { BASE_URL } from '../config/config.json';
 
 import 'react-datepicker/dist/react-datepicker.css';
 import '../styles/inputStyle.css';
@@ -86,19 +87,20 @@ export const SearchBar = ({
     try {
       setIsLoading(true);
 
-      const depFlightsRes = await axios.get(
-        'http://localhost:3000/flight/flights',
-        {
-          params: {
-            departure,
-            destination,
-            departureDate: depDateString,
-          },
+      const depFlightsRes = await axios.get(`${BASE_URL}/flight/flights`, {
+        params: {
+          departure,
+          destination,
+          departureDate: depDateString,
         },
-      );
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
 
       setDepartureFlights(depFlightsRes.data);
     } catch (err) {
+      console.log(err);
       setErrMsg(err.message);
       setDepartureFlights([]);
       setReturnFlights([]);
@@ -113,16 +115,16 @@ export const SearchBar = ({
         .replace(/,/g, '');
 
       try {
-        const retFlightsRes = await axios.get(
-          'http://localhost:3000/flight/flights',
-          {
-            params: {
-              departure: destination,
-              destination: departure,
-              departureDate: retDateString,
-            },
+        const retFlightsRes = await axios.get(`${BASE_URL}/flight/flights`, {
+          params: {
+            departure: destination,
+            destination: departure,
+            departureDate: retDateString,
           },
-        );
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
 
         setReturnFlights(retFlightsRes.data);
       } catch (err) {
