@@ -4,9 +4,7 @@ import { fetchAuthSession } from 'aws-amplify/auth';
 import { FaArrowRotateRight } from 'react-icons/fa6';
 import { FaHome } from 'react-icons/fa';
 import axios from 'axios';
-//import { BASE_URL } from '../config/config.json';
-
-const BASE_URL = import.meta.env.BASE_URL;
+import { BASE_URL } from '../config/config.json';
 
 import '../styles/loading.css';
 

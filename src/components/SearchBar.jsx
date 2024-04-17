@@ -7,9 +7,7 @@ import { useSetAtom } from 'jotai';
 import { FaArrowRotateRight } from 'react-icons/fa6';
 import { tripOptions, passengerOptions } from '../util/constants';
 import { departureFlightsAtom, returnFlightsAtom } from '../util/atoms';
-//import { BASE_URL } from '../config/config.json';
-
-const BASE_URL = import.meta.env.BASE_URL;
+import { BASE_URL } from '../config/config.json';
 
 import 'react-datepicker/dist/react-datepicker.css';
 import '../styles/inputStyle.css';

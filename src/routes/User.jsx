@@ -10,9 +10,7 @@ import { FaHome, FaSignOutAlt } from 'react-icons/fa';
 import { FaArrowRotateRight } from 'react-icons/fa6';
 import { FlightCard } from '../components/FlightCard';
 import { OrderTitle } from '../components/OrderTitle';
-//import { BASE_URL } from '../config/config.json';
-
-const BASE_URL = import.meta.env.BASE_URL;
+import { BASE_URL } from '../config/config.json';
 
 import '@aws-amplify/ui-react/styles.css';
 import '../styles/loading.css';

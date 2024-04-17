@@ -2,9 +2,7 @@ import { PayPalScriptProvider, PayPalButtons } from '@paypal/react-paypal-js';
 import { fetchAuthSession } from 'aws-amplify/auth';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-//import { BASE_URL } from '../config/config.json';
-
-const BASE_URL = import.meta.env.BASE_URL;
+import { BASE_URL } from '../config/config.json';
 
 export const PayPalButton = ({ total, currency, orderData }) => {
   const navigate = useNavigate();
