@@ -18,7 +18,6 @@ import '../styles/loading.css';
 const User = ({ signOut, user }) => {
   const [orderHistory, setOrderHistory] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [promptMsg, setPromptMsg] = useState('');
 
   const navigate = useNavigate();
 
@@ -38,11 +37,10 @@ const User = ({ signOut, user }) => {
 
   const fetchOrderHistory = async () => {
     setIsLoading(true);
-    setPromptMsg('');
 
     const token = await getAccessToken();
     if (!token) {
-      setPromptMsg('No Access Token Found');
+      console.log('No Access Token Found');
       setIsLoading(false);
       return;
     }
@@ -57,7 +55,7 @@ const User = ({ signOut, user }) => {
 
       setOrderHistory(res.data);
     } catch (err) {
-      setPromptMsg(err.message);
+      console.log(err.message);
     } finally {
       setIsLoading(false);
     }
@@ -65,7 +63,7 @@ const User = ({ signOut, user }) => {
 
   useEffect(() => {
     fetchOrderHistory();
-  }, []);
+  }, [orderHistory]);
 
   return (
     <>
@@ -131,9 +129,6 @@ const User = ({ signOut, user }) => {
             size={26}
             style={{ marginTop: 15 }}
           />
-        ) : null}
-        {promptMsg !== '' ? (
-          <div style={{ marginTop: 8 }}>{promptMsg}</div>
         ) : null}
       </div>
       <div>
