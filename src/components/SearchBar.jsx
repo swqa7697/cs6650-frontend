@@ -9,7 +9,7 @@ import { tripOptions, passengerOptions } from '../util/constants';
 import { departureFlightsAtom, returnFlightsAtom } from '../util/atoms';
 //import { BASE_URL } from '../config/config.json';
 
-const BASE_URL = process.env.BASE_URL;
+const BASE_URL = import.meta.env.BASE_URL;
 
 import 'react-datepicker/dist/react-datepicker.css';
 import '../styles/inputStyle.css';

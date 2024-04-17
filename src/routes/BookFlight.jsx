@@ -6,7 +6,7 @@ import { FaHome } from 'react-icons/fa';
 import axios from 'axios';
 //import { BASE_URL } from '../config/config.json';
 
-const BASE_URL = process.env.BASE_URL;
+const BASE_URL = import.meta.env.BASE_URL;
 
 import '../styles/loading.css';
 
