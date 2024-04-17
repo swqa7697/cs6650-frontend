@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { fetchAuthSession } from 'aws-amplify/auth';
 import { FaArrowRotateRight } from 'react-icons/fa6';
 import { FaHome } from 'react-icons/fa';
@@ -96,6 +96,7 @@ export default function BookFlight() {
         {
           headers: {
             'cognito-token': accessToken.toString(),
+            'airline-name': depFlight.airline,
             'Content-Type': 'application/json',
           },
         },
@@ -123,6 +124,7 @@ export default function BookFlight() {
         {
           headers: {
             'cognito-token': accessToken.toString(),
+            'airline-name': retFlight.airline,
             'Content-Type': 'application/json',
           },
         },
@@ -145,6 +147,7 @@ export default function BookFlight() {
         {
           headers: {
             'cognito-token': accessToken.toString(),
+            'airline-name': retFlight.airline,
             'Content-Type': 'application/json',
           },
         },
@@ -156,16 +159,22 @@ export default function BookFlight() {
 
   return (
     <div>
-      <Link
-        to="/search"
-        style={{ position: 'fixed', right: 15, top: 15, zIndex: 100 }}
+      <div
+        style={{
+          position: 'fixed',
+          right: 15,
+          top: 15,
+          zIndex: 100,
+          cursor: 'pointer',
+        }}
+        onClick={() => navigate('/search', { replace: true, state: {} })}
       >
         <FaHome
           size={40}
           color="white"
           style={{ backgroundColor: 'grey', borderRadius: 40, padding: 6 }}
         />
-      </Link>
+      </div>
       <h2
         style={{
           position: 'sticky',

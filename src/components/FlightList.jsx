@@ -10,6 +10,7 @@ export const FlightList = ({ flightsData, flightSelected, setFlight }) => {
           <FlightCard
             key={idx}
             flightId={flight._id}
+            airline={flight.airline}
             flightNumber={flight.flightNumber}
             departure={flight.departure}
             destination={flight.destination}

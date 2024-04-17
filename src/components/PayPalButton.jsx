@@ -1,9 +1,12 @@
 import { PayPalScriptProvider, PayPalButtons } from '@paypal/react-paypal-js';
 import { fetchAuthSession } from 'aws-amplify/auth';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { BASE_URL } from '../config/config.json';
 
-export const PayPalButton = ({ price, currency, reservationIds }) => {
+export const PayPalButton = ({ total, currency, orderData }) => {
+  const navigate = useNavigate();
+
   const getAccessToken = async () => {
     try {
       const { accessToken } = (await fetchAuthSession()).tokens ?? {};
@@ -18,7 +21,7 @@ export const PayPalButton = ({ price, currency, reservationIds }) => {
     }
   };
 
-  const confirmOrder = async (token, reservationId, purchaseId) => {
+  const confirmOrder = async (token, reservationId, airline, purchaseId) => {
     try {
       await axios.put(
         `${BASE_URL}/reservation/confirm`,
@@ -29,6 +32,7 @@ export const PayPalButton = ({ price, currency, reservationIds }) => {
         {
           headers: {
             'cognito-token': token,
+            'airline-name': airline,
             'Content-Type': 'application/json',
           },
         },
@@ -58,7 +62,7 @@ export const PayPalButton = ({ price, currency, reservationIds }) => {
           actions.order.create({
             purchase_units: [
               {
-                amount: { value: price },
+                amount: { value: total },
               },
             ],
           })
@@ -70,11 +74,19 @@ export const PayPalButton = ({ price, currency, reservationIds }) => {
             return;
           }
 
-          reservationIds.map(async (reservationId) => {
-            await confirmOrder(token, reservationId, data.orderID);
+          orderData.map(async (order) => {
+            await confirmOrder(
+              token,
+              order.reservationId,
+              order.airline,
+              data.orderID,
+            );
           });
 
-          window.location.reload();
+          return navigate('/transfer', {
+            replace: true,
+            state: { to: '/user' },
+          });
         }}
       />
     </PayPalScriptProvider>

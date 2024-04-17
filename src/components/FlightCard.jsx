@@ -2,6 +2,7 @@ import { FaArrowRight, FaPlane } from 'react-icons/fa6';
 
 export const FlightCard = ({
   flightId,
+  airline,
   flightNumber,
   departure,
   destination,
@@ -42,6 +43,7 @@ export const FlightCard = ({
     } else {
       setFlight({
         flightId,
+        airline,
         flightNumber,
         departure,
         destination,

@@ -12,11 +12,14 @@ export const OrderTitle = ({ group, groupLabel }) => {
     .toLocaleString('en-US')
     .split(' ')[0]
     .replace(/,/g, '');
-  const price =
+  const total =
     group.reduce((total, order) => total + order.reservation.flight.price, 0) *
     numPassengers;
   const currency = group[0].reservation.flight.currency;
-  const reservationIds = group.map((order) => order.reservation._id);
+  const orderData = group.map((order) => ({
+    reservationId: order.reservation._id,
+    airline: order.reservation.flight.airline,
+  }));
 
   return (
     <>
@@ -72,9 +75,9 @@ export const OrderTitle = ({ group, groupLabel }) => {
         >
           {status === 'pending' ? (
             <PayPalButton
-              price={price}
+              total={total}
               currency={currency}
-              reservationIds={reservationIds}
+              orderData={orderData}
             />
           ) : null}
           <div style={{ color: statusColor[status] }}>

@@ -9,6 +9,7 @@ import { Amplify } from 'aws-amplify';
 import Search from './routes/Search.jsx';
 import User from './routes/User.jsx';
 import BookFlight from './routes/BookFlight.jsx';
+import { Redirector } from './components/Redirector.jsx';
 import awsConfig from './util/aws-config.js';
 
 import './styles/index.css';
@@ -31,6 +32,10 @@ const router = createBrowserRouter([
   {
     path: '/bookflight',
     element: <BookFlight />,
+  },
+  {
+    path: '/transfer',
+    element: <Redirector />,
   },
 ]);
 

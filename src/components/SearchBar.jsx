@@ -171,7 +171,7 @@ export const SearchBar = ({
         <input
           type="text"
           placeholder="Where from?"
-          style={{ minWidth: 120 }}
+          style={{ minWidth: 125 }}
           onChange={(event) => {
             event.target.value = event.target.value.toUpperCase();
             setDeparture(event.target.value);
@@ -181,7 +181,7 @@ export const SearchBar = ({
         <input
           type="text"
           placeholder="Where to?"
-          style={{ minWidth: 120 }}
+          style={{ minWidth: 125 }}
           onChange={(event) => {
             event.target.value = event.target.value.toUpperCase();
             setDestination(event.target.value);

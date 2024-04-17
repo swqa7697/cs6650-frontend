@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { withAuthenticator } from '@aws-amplify/ui-react';
 import { fetchAuthSession } from 'aws-amplify/auth';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import FlatList from 'flatlist-react';
 import { FaHome, FaSignOutAlt } from 'react-icons/fa';
@@ -20,6 +20,8 @@ const User = ({ signOut, user }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [promptMsg, setPromptMsg] = useState('');
 
+  const navigate = useNavigate();
+
   const getAccessToken = async () => {
     try {
       const { accessToken } = (await fetchAuthSession()).tokens ?? {};
@@ -35,9 +37,13 @@ const User = ({ signOut, user }) => {
   };
 
   const fetchOrderHistory = async () => {
+    setIsLoading(true);
+    setPromptMsg('');
+
     const token = await getAccessToken();
     if (!token) {
       setPromptMsg('No Access Token Found');
+      setIsLoading(false);
       return;
     }
 
@@ -48,17 +54,17 @@ const User = ({ signOut, user }) => {
           'Content-Type': 'application/json',
         },
       });
+
       setOrderHistory(res.data);
     } catch (err) {
       setPromptMsg(err.message);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   useEffect(() => {
-    setPromptMsg('');
-    setIsLoading(true);
     fetchOrderHistory();
-    setIsLoading(false);
   }, []);
 
   return (
@@ -76,21 +82,27 @@ const User = ({ signOut, user }) => {
         }}
       >
         <div style={{ fontSize: 18, fontWeight: 'bold' }}>{user.username}</div>
-        <Link to="/search">
+        <div
+          style={{ cursor: 'pointer' }}
+          onClick={() => navigate('/search', { replace: true, state: {} })}
+        >
           <FaSignOutAlt
             size={35}
             color="grey"
             onClick={signOut}
             style={{ marginTop: 3 }}
           />
-        </Link>
-        <Link to="/search">
+        </div>
+        <div
+          style={{ cursor: 'pointer' }}
+          onClick={() => navigate('/search', { replace: true, state: {} })}
+        >
           <FaHome
             size={40}
             color="white"
             style={{ backgroundColor: 'grey', borderRadius: 40, padding: 6 }}
           />
-        </Link>
+        </div>
       </div>
       <div
         style={{

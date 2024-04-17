@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useAtom } from 'jotai';
 import { fetchAuthSession } from 'aws-amplify/auth';
 import { FaUser, FaArrowRotateRight } from 'react-icons/fa6';
@@ -52,6 +52,7 @@ export default function Search() {
     }
 
     return navigate('/bookflight', {
+      replace: true,
       state: {
         isRoundTrip: isRoundTrip.value,
         numPassengers: numPassengers.value,
@@ -63,9 +64,15 @@ export default function Search() {
 
   return (
     <>
-      <Link
-        to="/user"
-        style={{ position: 'fixed', right: 15, top: 15, zIndex: 100 }}
+      <div
+        style={{
+          position: 'fixed',
+          right: 15,
+          top: 15,
+          zIndex: 100,
+          cursor: 'pointer',
+        }}
+        onClick={() => navigate('/user', { replace: true, state: {} })}
       >
         <FaUser
           size={40}
@@ -76,17 +83,21 @@ export default function Search() {
             setRetFlights({});
           }}
         />
-      </Link>
+      </div>
       <div
         style={{
           display: 'flex',
+          flexDirection: 'column',
           justifyContent: 'center',
+          alignItems: 'center',
           position: 'sticky',
           top: 0,
-          paddingTop: 20,
+          paddingTop: 15,
+          gap: 20,
           backgroundColor: 'white',
         }}
       >
+        <h2>Search Flights</h2>
         <SearchBar
           isRoundTrip={isRoundTrip}
           setIsRoundTrip={setIsRoundTrip}
@@ -104,6 +115,7 @@ export default function Search() {
         ) : (
           <FlightCard
             flightId={depSelected.flightId}
+            airline={depSelected.airline}
             flightNumber={depSelected.flightNumber}
             departure={depSelected.departure}
             destination={depSelected.destination}
@@ -131,6 +143,7 @@ export default function Search() {
           <div style={{ width: '55%', maxWidth: 600, margin: 'auto' }}>
             <FlightCard
               flightId={retSelected.flightId}
+              airline={retSelected.airline}
               flightNumber={retSelected.flightNumber}
               departure={retSelected.departure}
               destination={retSelected.destination}
