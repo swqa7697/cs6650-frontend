@@ -41,9 +41,6 @@ const User = ({ signOut, user }) => {
       return;
     }
 
-    // For dev
-    console.log(token);
-
     try {
       const res = await axios.get(`${BASE_URL}/user/reservations`, {
         headers: {
