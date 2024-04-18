@@ -149,4 +149,23 @@ const User = ({ signOut, user }) => {
   );
 };
 
-export default withAuthenticator(User);
+export default withAuthenticator(User, {
+  formFields: {
+    signIn: {
+      username: {
+        placeholder: 'Enter your username or email',
+        isRequired: true,
+      },
+    },
+    signUp: {
+      username: {
+        order: 1,
+        isRequired: true,
+      },
+      email: {
+        order: 2,
+        isRequired: true,
+      },
+    },
+  },
+});
