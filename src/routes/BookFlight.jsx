@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { fetchAuthSession } from 'aws-amplify/auth';
 import { FaArrowRotateRight } from 'react-icons/fa6';
 import { FaHome } from 'react-icons/fa';
 import axios from 'axios';
+import { getAccessToken } from '../util/aws-cognito-session';
 import { BASE_URL } from '../config/config.json';
 
 import '../styles/loading.css';
@@ -46,47 +46,18 @@ export default function BookFlight() {
       }
     }
 
+    const token = await getAccessToken();
+    if (!token) {
+      setPromptMsg('Please log in or sign up to book a flight');
+      return;
+    }
+
+    let isBookingReturn = false;
     try {
       setIsLoading(true);
 
-      const { accessToken } = (await fetchAuthSession()).tokens ?? {};
-
-      if (!accessToken) {
-        setPromptMsg('Please log in or sign up to book a flight');
-        setIsLoading(false);
-        return;
-      }
-
       // Firstly book the departure flight
-      const resDep = await bookDeparture(accessToken);
-      if (!resDep.success) {
-        throw resDep.err;
-      }
-
-      // Then book the return flight if necessary
-      if (isRoundTrip) {
-        const resRet = await bookReturn(accessToken, resDep.orderId);
-
-        if (!resRet.success) {
-          await autoCancel(accessToken, resDep.reservationId);
-          throw resRet.err;
-        }
-      }
-
-      setPromptMsg(
-        isRoundTrip ? 'Your flights are booked!' : 'Your flight is booked!',
-      );
-      setIsBooked(true);
-    } catch (err) {
-      setPromptMsg(err);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const bookDeparture = async (accessToken) => {
-    try {
-      const res = await axios.post(
+      const resDep = await axios.post(
         `${BASE_URL}/user/book`,
         {
           flightId: depFlight.flightId,
@@ -95,48 +66,58 @@ export default function BookFlight() {
         },
         {
           headers: {
-            'cognito-token': accessToken.toString(),
+            'cognito-token': token,
             'airline-name': depFlight.airline,
             'Content-Type': 'application/json',
           },
         },
       );
-      return {
-        success: true,
-        reservationId: res.data.reservation._id,
-        orderId: res.data.reservation.orderId,
-      };
-    } catch (err) {
-      return { success: false, err };
-    }
-  };
 
-  const bookReturn = async (accessToken, orderId) => {
-    try {
-      await axios.post(
-        `${BASE_URL}/user/book`,
-        {
-          flightId: retFlight.flightId,
-          numPassengers,
-          passengerInfo,
-          orderId,
-        },
-        {
-          headers: {
-            'cognito-token': accessToken.toString(),
-            'airline-name': retFlight.airline,
-            'Content-Type': 'application/json',
-          },
-        },
+      // Then book the return flight if necessary
+      if (isRoundTrip) {
+        await axios
+          .post(
+            `${BASE_URL}/user/book`,
+            {
+              flightId: retFlight.flightId,
+              numPassengers,
+              passengerInfo,
+              orderId: resDep.data.reservation.orderId,
+            },
+            {
+              headers: {
+                'cognito-token': token,
+                'airline-name': retFlight.airline,
+                'Content-Type': 'application/json',
+              },
+            },
+          )
+          .catch(async (err) => {
+            await autoCancel(token, resDep.data.reservation._id);
+            isBookingReturn = true;
+            console.log(err);
+            throw new Error(err.response.data.err);
+          });
+      }
+
+      setPromptMsg(
+        isRoundTrip ? 'Your flights are booked!' : 'Your flight is booked!',
       );
-
-      return { success: true };
+      setIsBooked(true);
     } catch (err) {
-      return { success: false, err };
+      if (isBookingReturn) {
+        console.log(err.message);
+      } else {
+        console.log(err);
+        console.log(err.response.data.err);
+      }
+      setPromptMsg('Failed to book your flight(s)');
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  const autoCancel = async (accessToken, reservationId) => {
+  const autoCancel = async (token, reservationId) => {
     // Cancel the departure flight if failed to book return flight
     try {
       await axios.put(
@@ -146,14 +127,15 @@ export default function BookFlight() {
         },
         {
           headers: {
-            'cognito-token': accessToken.toString(),
-            'airline-name': retFlight.airline,
+            'cognito-token': token,
+            'airline-name': depFlight.airline,
             'Content-Type': 'application/json',
           },
         },
       );
     } catch (err) {
       console.log(err);
+      console.log(err.response.data.err);
     }
   };
 
@@ -187,7 +169,7 @@ export default function BookFlight() {
         Enter Information Of Passengers
       </h2>
       {passengerInfo.map((item, index) => (
-        <>
+        <div key={index}>
           <div
             style={{
               display: 'flex',
@@ -198,7 +180,6 @@ export default function BookFlight() {
             Passenger {index + 1}
           </div>
           <div
-            key={index}
             style={{
               display: 'flex',
               flexDirection: 'row',
@@ -232,7 +213,7 @@ export default function BookFlight() {
               }
             />
           </div>
-        </>
+        </div>
       ))}
       <div
         style={{

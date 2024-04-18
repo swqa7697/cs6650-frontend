@@ -1,25 +1,11 @@
 import { PayPalScriptProvider, PayPalButtons } from '@paypal/react-paypal-js';
-import { fetchAuthSession } from 'aws-amplify/auth';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { getAccessToken } from '../util/aws-cognito-session';
 import { BASE_URL } from '../config/config.json';
 
 export const PayPalButton = ({ total, currency, orderData }) => {
   const navigate = useNavigate();
-
-  const getAccessToken = async () => {
-    try {
-      const { accessToken } = (await fetchAuthSession()).tokens ?? {};
-      if (!accessToken) {
-        throw new Error('No access token found');
-      }
-
-      return accessToken.toString();
-    } catch (err) {
-      console.log(err);
-      return undefined;
-    }
-  };
 
   const confirmOrder = async (token, reservationId, airline, purchaseId) => {
     try {
@@ -38,7 +24,8 @@ export const PayPalButton = ({ total, currency, orderData }) => {
         },
       );
     } catch (err) {
-      console.log(err.message);
+      console.log(err);
+      console.log(err.response.data.err);
     }
   };
 

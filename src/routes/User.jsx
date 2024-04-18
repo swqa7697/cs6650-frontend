@@ -2,7 +2,6 @@
 /* eslint-disable react-refresh/only-export-components */
 import { useEffect, useState } from 'react';
 import { withAuthenticator } from '@aws-amplify/ui-react';
-import { fetchAuthSession } from 'aws-amplify/auth';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import FlatList from 'flatlist-react';
@@ -10,6 +9,7 @@ import { FaHome, FaSignOutAlt } from 'react-icons/fa';
 import { FaArrowRotateRight } from 'react-icons/fa6';
 import { FlightCard } from '../components/FlightCard';
 import { OrderTitle } from '../components/OrderTitle';
+import { getAccessToken } from '../util/aws-cognito-session';
 import { BASE_URL } from '../config/config.json';
 
 import '@aws-amplify/ui-react/styles.css';
@@ -21,41 +21,25 @@ const User = ({ signOut, user }) => {
 
   const navigate = useNavigate();
 
-  const getAccessToken = async () => {
-    try {
-      const { accessToken } = (await fetchAuthSession()).tokens ?? {};
-      if (!accessToken) {
-        throw new Error('No access token found');
-      }
-
-      return accessToken.toString();
-    } catch (err) {
-      console.log(err);
-      return undefined;
-    }
-  };
-
   const fetchOrderHistory = async () => {
-    setIsLoading(true);
-
     const token = await getAccessToken();
     if (!token) {
       console.log('No Access Token Found');
-      setIsLoading(false);
       return;
     }
 
     try {
+      setIsLoading(true);
       const res = await axios.get(`${BASE_URL}/user/reservations`, {
         headers: {
           'cognito-token': token,
           'Content-Type': 'application/json',
         },
       });
-
       setOrderHistory(res.data);
     } catch (err) {
-      console.log(err.message);
+      console.log(err);
+      console.log(err.response.data.err);
     } finally {
       setIsLoading(false);
     }
@@ -63,7 +47,7 @@ const User = ({ signOut, user }) => {
 
   useEffect(() => {
     fetchOrderHistory();
-  }, [orderHistory]);
+  }, []);
 
   return (
     <>

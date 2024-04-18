@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAtom } from 'jotai';
-import { fetchAuthSession } from 'aws-amplify/auth';
-import { FaUser, FaArrowRotateRight } from 'react-icons/fa6';
+import { FaUser } from 'react-icons/fa6';
 import { SearchBar } from '../components/SearchBar';
 import { FlightList } from '../components/FlightList';
 import { FlightCard } from '../components/FlightCard';
+import { getAccessToken } from '../util/aws-cognito-session';
 import { tripOptions, passengerOptions } from '../util/constants';
 import { departureFlightsAtom, returnFlightsAtom } from '../util/atoms';
 
@@ -22,8 +22,8 @@ export default function Search() {
   const [depSelected, setDepSelected] = useState(null);
   const [retSelected, setRetSelected] = useState(null);
 
-  const [isLoading, setIsLoading] = useState(false);
   const [promptMsg, setPromptMsg] = useState('');
+  const [isSearched, setIsSearched] = useState(false);
 
   useEffect(() => {
     setDepSelected(null);
@@ -35,20 +35,11 @@ export default function Search() {
   const goToBookingPage = async () => {
     setPromptMsg('');
 
-    try {
-      setIsLoading(true);
+    const token = await getAccessToken();
 
-      const { accessToken } = (await fetchAuthSession()).tokens ?? {};
-
-      if (!accessToken) {
-        setPromptMsg('Please log in or sign up to book a flight');
-        setIsLoading(false);
-        return;
-      }
-    } catch (err) {
-      setPromptMsg(err);
-    } finally {
-      setIsLoading(false);
+    if (!token) {
+      setPromptMsg('Please log in or sign up to book a flight');
+      return;
     }
 
     return navigate('/bookflight', {
@@ -103,6 +94,7 @@ export default function Search() {
           setIsRoundTrip={setIsRoundTrip}
           numPassengers={numPassengers}
           setNumPassengers={setNumPassengers}
+          setIsSearched={setIsSearched}
         />
       </div>
       <div style={{ width: '55%', maxWidth: 600, margin: 'auto' }}>
@@ -111,6 +103,7 @@ export default function Search() {
             flightsData={depFlights}
             flightSelected={depSelected}
             setFlight={setDepSelected}
+            isSearched={isSearched}
           />
         ) : (
           <FlightCard
@@ -137,6 +130,7 @@ export default function Search() {
               flightsData={retFlights}
               flightSelected={retSelected}
               setFlight={setRetSelected}
+              isSearched={isSearched}
             />
           </div>
         ) : (
@@ -173,13 +167,6 @@ export default function Search() {
           >
             Next
           </button>
-          {isLoading ? (
-            <FaArrowRotateRight
-              className="loader"
-              size={26}
-              style={{ marginTop: 15 }}
-            />
-          ) : null}
           {promptMsg !== '' ? (
             <div style={{ marginTop: 8 }}>{promptMsg}</div>
           ) : null}

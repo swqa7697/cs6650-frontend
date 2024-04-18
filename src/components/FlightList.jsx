@@ -1,7 +1,12 @@
 import FlatList from 'flatlist-react';
 import { FlightCard } from './FlightCard';
 
-export const FlightList = ({ flightsData, flightSelected, setFlight }) => {
+export const FlightList = ({
+  flightsData,
+  flightSelected,
+  setFlight,
+  isSearched,
+}) => {
   return (
     <FlatList
       list={flightsData}
@@ -24,7 +29,7 @@ export const FlightList = ({ flightsData, flightSelected, setFlight }) => {
           />
         );
       }}
-      renderWhenEmpty={() => null}
+      renderWhenEmpty={() => (isSearched ? <div>No Flight Found</div> : null)}
       sortBy="price"
     />
   );

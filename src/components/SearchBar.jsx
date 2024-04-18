@@ -18,6 +18,7 @@ export const SearchBar = ({
   setIsRoundTrip,
   numPassengers,
   setNumPassengers,
+  setIsSearched,
 }) => {
   const [departure, setDeparture] = useState('');
   const [destination, setDestination] = useState('');
@@ -32,7 +33,6 @@ export const SearchBar = ({
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    setDepartureFlights([]);
     setReturnFlights([]);
   }, [isRoundTrip]);
 
@@ -101,11 +101,11 @@ export const SearchBar = ({
       setDepartureFlights(depFlightsRes.data);
     } catch (err) {
       console.log(err);
-      setErrMsg(err.message);
-      setDepartureFlights([]);
-      setReturnFlights([]);
-      setIsLoading(false);
+      console.log(err.response.data.err);
       return;
+    } finally {
+      setIsLoading(false);
+      setIsSearched(true);
     }
 
     if (isRoundTrip.value) {
@@ -115,6 +115,8 @@ export const SearchBar = ({
         .replace(/,/g, '');
 
       try {
+        setIsLoading(true);
+
         const retFlightsRes = await axios.get(`${BASE_URL}/flight/flights`, {
           params: {
             departure: destination,
@@ -128,15 +130,14 @@ export const SearchBar = ({
 
         setReturnFlights(retFlightsRes.data);
       } catch (err) {
-        setErrMsg(err.message);
-        setReturnFlights([]);
+        console.log(err);
+        console.log(err.response.data.err);
+      } finally {
         setIsLoading(false);
       }
     } else {
       setReturnFlights([]);
     }
-
-    setIsLoading(false);
   };
 
   return (
